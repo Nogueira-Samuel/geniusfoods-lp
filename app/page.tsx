@@ -405,24 +405,162 @@ const TESTIMONIALS = [
     quote:
       "Depois que migramos nosso atendimento para a Genius Foods parei de perder cliente.",
     name: "Matheus",
-    business: "Açaí do Matheus",
+    business: "Açaí Tropical",
     city: "Rio de Janeiro",
   },
   {
     quote:
       "Agilizou muito minha vida criar o cardápio digital, meus atendimentos são mais rápidos e eu não respondo as mesmas mensagens sempre.",
     name: "Ana Paula",
-    business: "Birosca da Ana",
+    business: "Cantina da Ana Paula",
     city: "São Paulo",
   },
   {
     quote:
       "O impacto em meu negócio depois do cardápio da Genius Foods foi enorme. Meus clientes recebem notificação automática de cada etapa do pedido e o assistente de IA parece um humano de verdade - é até melhor que eu rs.",
     name: "Carlos",
-    business: "Hamburgueria do Carlos",
+    business: "Burguer House",
     city: "Belo Horizonte",
   },
+  {
+    quote:
+      "Nunca imaginei que seria tão simples receber pedidos online. Em menos de uma hora já estava funcionando.",
+    name: "Roberto",
+    business: "Pizzaria Bella Napoli",
+    city: "Curitiba",
+  },
+  {
+    quote:
+      "Meus clientes adoraram! Pedem pelo link e eu vejo tudo no painel. Acabei com o caderno de anotações.",
+    name: "Fernanda",
+    business: "Doceria Sweet Cake",
+    city: "Brasília",
+  },
+  {
+    quote:
+      "O suporte é incrível e o sistema não trava. Uso todo dia no pico do movimento sem problema nenhum.",
+    name: "Diego",
+    business: "Lanchonete Express",
+    city: "Fortaleza",
+  },
 ];
+
+function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
+  return (
+    <blockquote className="relative flex h-full flex-col rounded-xl border border-primary/10 bg-white p-6 shadow-sm">
+      <span
+        className="pointer-events-none absolute -top-2 left-5 text-5xl font-serif text-accent/60"
+        aria-hidden="true"
+      >
+        &ldquo;
+      </span>
+      <p className="mt-5 text-sm leading-relaxed text-gray-700">{t.quote}</p>
+      <footer className="mt-5 border-t border-primary/10 pt-4">
+        <p className="text-sm font-bold text-primary">
+          {t.name}, {t.business}
+        </p>
+        <p className="text-xs text-gray-500">{t.city}</p>
+        <p className="mt-1 text-accent" aria-label="Avaliação 5 de 5 estrelas">
+          ⭐⭐⭐⭐⭐
+        </p>
+      </footer>
+    </blockquote>
+  );
+}
+
+const AUTOPLAY_INTERVAL_MS = 4000;
+
+function TestimonialsCarousel() {
+  const [itemsPerView, setItemsPerView] = useState(1);
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    function updateItemsPerView() {
+      setItemsPerView(window.innerWidth >= 640 ? 3 : 1);
+    }
+    updateItemsPerView();
+    window.addEventListener("resize", updateItemsPerView);
+    return () => window.removeEventListener("resize", updateItemsPerView);
+  }, []);
+
+  const totalSlides = Math.ceil(TESTIMONIALS.length / itemsPerView);
+
+  useEffect(() => {
+    setIndex((i) => (i >= totalSlides ? 0 : i));
+  }, [totalSlides]);
+
+  useEffect(() => {
+    if (paused || totalSlides <= 1) return;
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % totalSlides);
+    }, AUTOPLAY_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [paused, totalSlides]);
+
+  function goTo(target: number) {
+    setIndex(((target % totalSlides) + totalSlides) % totalSlides);
+  }
+
+  return (
+    <div
+      className="relative mt-12"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="overflow-hidden">
+        <div
+          className="flex transition-transform duration-500 ease-in-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {Array.from({ length: totalSlides }).map((_, slideIndex) => (
+            <div key={slideIndex} className="grid w-full shrink-0 gap-6 px-1 sm:grid-cols-3">
+              {TESTIMONIALS.slice(
+                slideIndex * itemsPerView,
+                slideIndex * itemsPerView + itemsPerView
+              ).map((t) => (
+                <TestimonialCard key={t.name} t={t} />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={() => goTo(index - 1)}
+        aria-label="Depoimento anterior"
+        className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-md transition hover:bg-primary hover:text-white"
+      >
+        ←
+      </button>
+      <button
+        type="button"
+        onClick={() => goTo(index + 1)}
+        aria-label="Próximo depoimento"
+        className="absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-md transition hover:bg-primary hover:text-white"
+      >
+        →
+      </button>
+
+      <div className="mt-8 flex justify-center gap-2" role="tablist" aria-label="Selecionar grupo de depoimentos">
+        {Array.from({ length: totalSlides }).map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            role="tab"
+            aria-selected={i === index}
+            aria-label={`Ir para o grupo de depoimentos ${i + 1}`}
+            onClick={() => goTo(i)}
+            className={`h-2.5 w-2.5 rounded-full transition ${
+              i === index ? "bg-accent" : "bg-primary/20 hover:bg-primary/40"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function TestimonialsSection() {
   return (
@@ -434,30 +572,9 @@ function TestimonialsSection() {
           </h2>
         </Reveal>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {TESTIMONIALS.map((t, i) => (
-            <Reveal key={t.name} delay={i * 120}>
-              <blockquote className="relative h-full rounded-xl border border-primary/10 bg-white p-6 shadow-sm">
-                <span
-                  className="pointer-events-none absolute -top-2 left-5 text-5xl font-serif text-accent/60"
-                  aria-hidden="true"
-                >
-                  &ldquo;
-                </span>
-                <p className="mt-5 text-sm leading-relaxed text-gray-700">{t.quote}</p>
-                <footer className="mt-5 border-t border-primary/10 pt-4">
-                  <p className="text-sm font-bold text-primary">
-                    {t.name}, {t.business}
-                  </p>
-                  <p className="text-xs text-gray-500">{t.city}</p>
-                  <p className="mt-1 text-accent" aria-label="Avaliação 5 de 5 estrelas">
-                    ⭐⭐⭐⭐⭐
-                  </p>
-                </footer>
-              </blockquote>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={100}>
+          <TestimonialsCarousel />
+        </Reveal>
       </div>
     </section>
   );
