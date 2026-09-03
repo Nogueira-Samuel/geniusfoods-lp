@@ -5,6 +5,12 @@ import { useEffect, useRef, useState } from "react";
 const SIGNUP_URL = "https://app.geniusfoods.com.br/signup";
 const WHATSAPP_NUMBER_DISPLAY = "(21) 99590-2657";
 const WHATSAPP_URL = "https://wa.me/5521995902657";
+// Termos e privacidade agora moram no app (aceite fica atrelado ao
+// cadastro) — as páginas antigas em /termos-de-uso e /politica-de-
+// -privacidade continuam existindo aqui, mas o footer não linka mais pra
+// elas.
+const TERMS_URL = "https://app.geniusfoods.com.br/termos";
+const PRIVACY_URL = "https://app.geniusfoods.com.br/privacidade";
 
 /* ------------------------------------------------------------------ */
 /* Reveal-on-scroll wrapper (IntersectionObserver, no external lib)   */
@@ -911,10 +917,10 @@ function Footer() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-white/70">
-            <a href="/politica-de-privacidade" className="transition hover:text-secondary">
+            <a href={PRIVACY_URL} className="transition hover:text-secondary">
               Política de Privacidade
             </a>
-            <a href="/termos-de-uso" className="transition hover:text-secondary">
+            <a href={TERMS_URL} className="transition hover:text-secondary">
               Termos de Uso
             </a>
             <a href={WHATSAPP_URL} className="transition hover:text-secondary">
