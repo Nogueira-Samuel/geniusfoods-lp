@@ -411,15 +411,15 @@ const TESTIMONIALS = [
   {
     quote:
       "Agilizou muito minha vida criar o cardápio digital, meus atendimentos são mais rápidos e eu não respondo as mesmas mensagens sempre.",
-    name: "Carolina",
-    business: "Lanchonete da Carol",
+    name: "Ana Paula",
+    business: "Birosca da Ana",
     city: "São Paulo",
   },
   {
     quote:
-      "O impacto em meu negócio depois do cardápio da Genius Foods foi enorme. Meus clientes recebem notificação automática de cada etapa do pedido e o assistente de IA parece um humano de verdade — é até melhor que eu rs.",
-    name: "Ricardo",
-    business: "Pizzaria do Ricardo",
+      "O impacto em meu negócio depois do cardápio da Genius Foods foi enorme. Meus clientes recebem notificação automática de cada etapa do pedido e o assistente de IA parece um humano de verdade - é até melhor que eu rs.",
+    name: "Carlos",
+    business: "Hamburgueria do Carlos",
     city: "Belo Horizonte",
   },
 ];
@@ -646,7 +646,7 @@ const FAQS = [
   },
   {
     q: "Como funciona o assistente de IA?",
-    a: "O assistente responde automaticamente as dúvidas dos seus clientes no WhatsApp — horário, cardápio, promoções — 24h por dia, sem você precisar fazer nada.",
+    a: "O assistente responde automaticamente as dúvidas dos seus clientes no WhatsApp - horário, cardápio, promoções - 24h por dia, sem você precisar fazer nada.",
   },
 ];
 
