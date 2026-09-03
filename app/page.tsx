@@ -473,6 +473,10 @@ type Plan = {
   highlight?: boolean;
   features: { label: string; included: boolean }[];
   cta: string;
+  // Planos pagos levam pro signup com ?plan=<planId>, pra pular o dashboard
+  // e ir direto pro checkout da Infinitepay depois da conta criada. Free
+  // não tem planId — signup sem parâmetro, cai no dashboard normalmente.
+  planId?: "basic" | "pro" | "premium";
 };
 
 const PLANS: Plan[] = [
@@ -502,6 +506,7 @@ const PLANS: Plan[] = [
       { label: "Assistente de IA", included: false },
     ],
     cta: "Assinar Basic",
+    planId: "basic",
   },
   {
     name: "Pro",
@@ -517,6 +522,7 @@ const PLANS: Plan[] = [
       { label: "Suporte prioritário", included: true },
     ],
     cta: "Assinar Pro",
+    planId: "pro",
   },
   {
     name: "Premium",
@@ -530,6 +536,7 @@ const PLANS: Plan[] = [
       { label: "Atendimento VIP", included: true },
     ],
     cta: "Assinar Premium",
+    planId: "premium",
   },
 ];
 
@@ -574,7 +581,7 @@ function PlanCard({ plan }: { plan: Plan }) {
       </ul>
 
       <a
-        href={SIGNUP_URL}
+        href={plan.planId ? `${SIGNUP_URL}?plan=${plan.planId}` : SIGNUP_URL}
         aria-label={`${plan.cta} - plano ${plan.name} Genius Foods`}
         className={`mt-8 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
           plan.highlight
