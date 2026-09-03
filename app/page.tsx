@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const SIGNUP_URL = "https://companhiagenius.com.br/signup";
+const SIGNUP_URL = "https://app.geniusfoods.com.br/signup";
 const WHATSAPP_NUMBER_DISPLAY = "(21) 99590-2657";
 const WHATSAPP_URL = "https://wa.me/5521995902657";
 
