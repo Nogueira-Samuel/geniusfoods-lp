@@ -94,10 +94,10 @@ function Nav() {
         </div>
         <a
           href={SIGNUP_URL}
-          aria-label="Criar minha loja grátis na Genius Foods"
+          aria-label="Começar teste grátis na Genius Foods"
           className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-accent-hover"
         >
-          Criar loja grátis
+          Começar teste grátis
         </a>
       </nav>
     </header>
@@ -216,10 +216,10 @@ function Hero() {
             <div className="mt-9 flex flex-col gap-4 sm:flex-row sm:items-center">
               <a
                 href={SIGNUP_URL}
-                aria-label="Criar minha loja grátis na Genius Foods"
+                aria-label="Começar teste grátis na Genius Foods"
                 className="inline-flex items-center justify-center rounded-full bg-accent px-7 py-3.5 text-base font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-0.5 hover:bg-accent-hover"
               >
-                Criar minha loja grátis →
+                Começar teste grátis →
               </a>
               <a
                 href="#solucao"
@@ -593,42 +593,32 @@ type Plan = {
   name: string;
   price: string;
   period?: string;
+  subtitle?: string;
   highlight?: boolean;
   features: { label: string; included: boolean }[];
   cta: string;
   // Planos pagos levam pro signup com ?plan=<planId>, pra pular o dashboard
-  // e ir direto pro checkout da Infinitepay depois da conta criada. Free
-  // não tem planId — signup sem parâmetro, cai no dashboard normalmente.
+  // e ir direto pro checkout da Infinitepay depois da conta criada.
   planId?: "basic" | "pro" | "premium";
+  // Enterprise não segue o fluxo de signup - o CTA leva direto pro WhatsApp.
+  ctaHref?: string;
 };
 
 const PLANS: Plan[] = [
   {
-    name: "Free",
-    price: "Grátis",
-    period: "para sempre",
-    features: [
-      { label: "Cardápio com até 20 itens", included: true },
-      { label: "Pedidos ilimitados", included: true },
-      { label: "Painel de gestão completo", included: true },
-      { label: "Notificações WhatsApp automáticas", included: true },
-      { label: "Assistente de IA", included: false },
-      { label: "Marca Genius Foods visível", included: false },
-    ],
-    cta: "Começar grátis",
-  },
-  {
-    name: "Basic",
+    name: "Starter",
     price: "R$ 67",
     period: "/mês",
     features: [
-      { label: "Tudo do Free", included: true },
-      { label: "Até 50 itens no cardápio", included: true },
+      { label: "Cardápio com até 50 itens", included: true },
+      { label: "Pedidos ilimitados", included: true },
+      { label: "Painel de gestão completo", included: true },
+      { label: "Notificações WhatsApp automáticas", included: true },
       { label: "3 temas de cores", included: true },
       { label: "Sem marca Genius Foods", included: true },
       { label: "Assistente de IA", included: false },
     ],
-    cta: "Assinar Basic",
+    cta: "Assinar Starter",
     planId: "basic",
   },
   {
@@ -637,7 +627,7 @@ const PLANS: Plan[] = [
     period: "/mês",
     highlight: true,
     features: [
-      { label: "Tudo do Basic", included: true },
+      { label: "Tudo do Starter", included: true },
       { label: "Itens ilimitados", included: true },
       { label: "Assistente de IA no WhatsApp", included: true },
       { label: "Todos os temas de cores", included: true },
@@ -661,6 +651,21 @@ const PLANS: Plan[] = [
     cta: "Assinar Premium",
     planId: "premium",
   },
+  {
+    name: "Enterprise",
+    price: "Sob consulta",
+    subtitle: "Para redes, franquias e alto volume",
+    features: [
+      { label: "Tudo do Premium", included: true },
+      { label: "Múltiplas unidades", included: true },
+      { label: "SLA de suporte garantido", included: true },
+      { label: "Onboarding dedicado", included: true },
+      { label: "Integração com sistemas próprios", included: true },
+      { label: "Contrato personalizado", included: true },
+    ],
+    cta: "Falar com consultor",
+    ctaHref: WHATSAPP_URL,
+  },
 ];
 
 function PlanCard({ plan }: { plan: Plan }) {
@@ -683,6 +688,7 @@ function PlanCard({ plan }: { plan: Plan }) {
         <span className="text-3xl font-extrabold text-primary">{plan.price}</span>{" "}
         {plan.period && <span className="text-sm text-gray-500">{plan.period}</span>}
       </p>
+      {plan.subtitle && <p className="mt-1 text-sm text-gray-500">{plan.subtitle}</p>}
 
       <ul className="mt-6 flex-1 space-y-3 text-sm">
         {plan.features.map((f) => (
@@ -704,7 +710,9 @@ function PlanCard({ plan }: { plan: Plan }) {
       </ul>
 
       <a
-        href={plan.planId ? `${SIGNUP_URL}?plan=${plan.planId}` : SIGNUP_URL}
+        href={
+          plan.ctaHref ?? (plan.planId ? `${SIGNUP_URL}?plan=${plan.planId}` : SIGNUP_URL)
+        }
         aria-label={`${plan.cta} - plano ${plan.name} Genius Foods`}
         className={`mt-8 inline-flex items-center justify-center rounded-full px-6 py-3 text-sm font-semibold transition ${
           plan.highlight
@@ -723,7 +731,15 @@ function PricingSection() {
     <section id="planos" className="bg-bg py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal>
-          <h2 className="text-center text-3xl font-extrabold text-primary sm:text-4xl">
+          <div className="mx-auto flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-bold text-white shadow-sm shadow-accent/30">
+              🎉 14 dias grátis em qualquer plano. Sem cartão de crédito.
+            </span>
+          </div>
+        </Reveal>
+
+        <Reveal delay={40}>
+          <h2 className="mt-8 text-center text-3xl font-extrabold text-primary sm:text-4xl">
             Planos para todos os tamanhos de negócio
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-gray-600">
@@ -878,10 +894,10 @@ function FinalCtaSection() {
         <Reveal delay={200}>
           <a
             href={SIGNUP_URL}
-            aria-label="Criar minha loja grátis na Genius Foods agora"
+            aria-label="Começar teste grátis na Genius Foods agora"
             className="mt-9 inline-flex items-center justify-center rounded-full bg-accent px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-accent/30 transition hover:-translate-y-0.5 hover:bg-accent-hover"
           >
-            Criar minha loja grátis agora →
+            Começar teste grátis agora →
           </a>
         </Reveal>
         <Reveal delay={280}>
