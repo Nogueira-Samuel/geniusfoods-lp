@@ -589,9 +589,13 @@ function TestimonialsSection() {
 /* ------------------------------------------------------------------ */
 /* Planos                                                               */
 /* ------------------------------------------------------------------ */
+type PaymentMethod = "pix" | "cartao";
+
 type Plan = {
   name: string;
-  price: string;
+  pricePix?: number;
+  priceCard?: number;
+  price?: string;
   period?: string;
   subtitle?: string;
   highlight?: boolean;
@@ -607,7 +611,8 @@ type Plan = {
 const PLANS: Plan[] = [
   {
     name: "Starter",
-    price: "R$ 67",
+    pricePix: 67,
+    priceCard: 73,
     period: "/mês",
     features: [
       { label: "Cardápio com até 50 itens", included: true },
@@ -623,7 +628,8 @@ const PLANS: Plan[] = [
   },
   {
     name: "Pro",
-    price: "R$ 127",
+    pricePix: 127,
+    priceCard: 137,
     period: "/mês",
     highlight: true,
     features: [
@@ -639,7 +645,8 @@ const PLANS: Plan[] = [
   },
   {
     name: "Premium",
-    price: "R$ 197",
+    pricePix: 197,
+    priceCard: 213,
     period: "/mês",
     features: [
       { label: "Tudo do Pro", included: true },
@@ -668,7 +675,12 @@ const PLANS: Plan[] = [
   },
 ];
 
-function PlanCard({ plan }: { plan: Plan }) {
+function PlanCard({ plan, paymentMethod }: { plan: Plan; paymentMethod: PaymentMethod }) {
+  const hasNumericPrice = plan.pricePix !== undefined && plan.priceCard !== undefined;
+  const displayPrice = hasNumericPrice
+    ? `R$ ${paymentMethod === "pix" ? plan.pricePix : plan.priceCard}`
+    : plan.price;
+
   return (
     <article
       className={`relative flex h-full w-[85vw] max-w-sm shrink-0 snap-center flex-col rounded-2xl p-7 sm:w-auto ${
@@ -684,9 +696,19 @@ function PlanCard({ plan }: { plan: Plan }) {
       )}
 
       <h3 className="text-lg font-bold text-primary">{plan.name}</h3>
-      <p className="mt-2">
-        <span className="text-3xl font-extrabold text-primary">{plan.price}</span>{" "}
+      <p className="mt-2 flex flex-wrap items-baseline gap-2">
+        <span
+          key={paymentMethod}
+          className="animate-price-fade text-3xl font-extrabold text-primary"
+        >
+          {displayPrice}
+        </span>
         {plan.period && <span className="text-sm text-gray-500">{plan.period}</span>}
+        {hasNumericPrice && paymentMethod === "pix" && (
+          <span className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700">
+            💸 Melhor preço
+          </span>
+        )}
       </p>
       {plan.subtitle && <p className="mt-1 text-sm text-gray-500">{plan.subtitle}</p>}
 
@@ -727,6 +749,8 @@ function PlanCard({ plan }: { plan: Plan }) {
 }
 
 function PricingSection() {
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("pix");
+
   return (
     <section id="planos" className="bg-bg py-20 sm:py-28">
       <div className="mx-auto max-w-6xl px-6">
@@ -747,10 +771,42 @@ function PricingSection() {
           </p>
         </Reveal>
 
+        <Reveal delay={80}>
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <div className="inline-flex rounded-full border border-primary/15 bg-white p-1 shadow-sm">
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("pix")}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 ${
+                  paymentMethod === "pix"
+                    ? "bg-accent text-white shadow-sm"
+                    : "text-gray-500 hover:text-primary"
+                }`}
+              >
+                💸 PIX
+              </button>
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("cartao")}
+                className={`rounded-full px-5 py-2 text-sm font-bold transition-all duration-300 ${
+                  paymentMethod === "cartao"
+                    ? "bg-accent text-white shadow-sm"
+                    : "text-gray-500 hover:text-primary"
+                }`}
+              >
+                💳 Cartão
+              </button>
+            </div>
+            <p className="text-xs text-gray-500">
+              Pague via PIX e economize até R$16/mês
+            </p>
+          </div>
+        </Reveal>
+
         <Reveal delay={120}>
           <div className="mt-12 -mx-6 flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-4 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
             {PLANS.map((plan) => (
-              <PlanCard key={plan.name} plan={plan} />
+              <PlanCard key={plan.name} plan={plan} paymentMethod={paymentMethod} />
             ))}
           </div>
         </Reveal>
