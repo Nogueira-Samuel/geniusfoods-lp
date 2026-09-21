@@ -205,10 +205,25 @@ function Hero() {
             </h1>
           </Reveal>
 
-          <Reveal delay={160}>
-            <p className="mt-6 max-w-xl text-lg text-white/80">
+          <Reveal delay={120}>
+            <p className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-accent/40 bg-accent/15 px-5 py-3 text-lg font-extrabold text-white sm:text-xl">
+              <span
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-base text-white"
+                aria-hidden="true"
+              >
+                ✓
+              </span>
+              <span>
+                Sem taxa por pedido.{" "}
+                <span className="text-accent">Sem comissão sobre suas vendas.</span>
+              </span>
+            </p>
+          </Reveal>
+
+          <Reveal delay={180}>
+            <p className="mt-5 max-w-xl text-lg text-white/80">
               Cardápio digital completo com painel de gestão, notificações automáticas e
-              assistente de IA. Tudo pelo WhatsApp que você já usa.
+              assistente de IA. Tudo pelo WhatsApp que você já usa, e você paga só a mensalidade.
             </p>
           </Reveal>
 
