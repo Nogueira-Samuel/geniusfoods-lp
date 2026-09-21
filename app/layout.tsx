@@ -99,34 +99,6 @@ const jsonLd = {
       description: "White label, múltiplas unidades e atendimento VIP.",
     },
   ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "5.0",
-    reviewCount: "3",
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Matheus" },
-      reviewRating: { "@type": "Rating", ratingValue: "5" },
-      reviewBody:
-        "Depois que migramos nosso atendimento para a Genius Foods parei de perder cliente.",
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Carolina" },
-      reviewRating: { "@type": "Rating", ratingValue: "5" },
-      reviewBody:
-        "Agilizou muito minha vida criar o cardápio digital, meus atendimentos são mais rápidos e eu não respondo as mesmas mensagens sempre.",
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Ricardo" },
-      reviewRating: { "@type": "Rating", ratingValue: "5" },
-      reviewBody:
-        "O impacto em meu negócio depois do cardápio da Genius Foods foi enorme. Meus clientes recebem notificação automática de cada etapa do pedido e o assistente de IA parece um humano de verdade.",
-    },
-  ],
 };
 
 export default function RootLayout({

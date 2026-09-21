@@ -55,17 +55,6 @@ function Reveal({
 }
 
 /* ------------------------------------------------------------------ */
-/* Shared bits                                                         */
-/* ------------------------------------------------------------------ */
-function Badge({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-1.5 text-sm font-semibold text-white shadow-sm">
-      {children}
-    </span>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* Nav                                                                  */
 /* ------------------------------------------------------------------ */
 function Nav() {
@@ -195,12 +184,8 @@ function Hero() {
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-2">
         <div>
-          <Reveal>
-            <Badge>🚀 Mais de 50 pedidos processados todo dia</Badge>
-          </Reveal>
-
           <Reveal delay={80}>
-            <h1 className="mt-6 text-balance text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-[3.25rem]">
+            <h1 className="text-balance text-4xl font-extrabold leading-tight text-white sm:text-5xl lg:text-[3.25rem]">
               Seu restaurante recebendo pedidos pelo WhatsApp, sem perder nenhum.
             </h1>
           </Reveal>
@@ -413,189 +398,6 @@ function FeaturesSection() {
             </Reveal>
           ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Depoimentos                                                          */
-/* ------------------------------------------------------------------ */
-const TESTIMONIALS = [
-  {
-    quote:
-      "Depois que migramos nosso atendimento para a Genius Foods parei de perder cliente.",
-    name: "Matheus",
-    business: "Açaí Tropical",
-    city: "Rio de Janeiro",
-  },
-  {
-    quote:
-      "Agilizou muito minha vida criar o cardápio digital, meus atendimentos são mais rápidos e eu não respondo as mesmas mensagens sempre.",
-    name: "Ana Paula",
-    business: "Cantina da Ana Paula",
-    city: "São Paulo",
-  },
-  {
-    quote:
-      "O impacto em meu negócio depois do cardápio da Genius Foods foi enorme. Meus clientes recebem notificação automática de cada etapa do pedido e o assistente de IA parece um humano de verdade - é até melhor que eu rs.",
-    name: "Carlos",
-    business: "Burguer House",
-    city: "Belo Horizonte",
-  },
-  {
-    quote:
-      "Nunca imaginei que seria tão simples receber pedidos online. Em menos de uma hora já estava funcionando.",
-    name: "Roberto",
-    business: "Pizzaria Bella Napoli",
-    city: "Curitiba",
-  },
-  {
-    quote:
-      "Meus clientes adoraram! Pedem pelo link e eu vejo tudo no painel. Acabei com o caderno de anotações.",
-    name: "Fernanda",
-    business: "Doceria Sweet Cake",
-    city: "Brasília",
-  },
-  {
-    quote:
-      "O suporte é incrível e o sistema não trava. Uso todo dia no pico do movimento sem problema nenhum.",
-    name: "Diego",
-    business: "Lanchonete Express",
-    city: "Fortaleza",
-  },
-];
-
-function TestimonialCard({ t }: { t: (typeof TESTIMONIALS)[number] }) {
-  return (
-    <blockquote className="relative flex h-full flex-col rounded-xl border border-primary/10 bg-white p-6 shadow-sm">
-      <span
-        className="pointer-events-none absolute -top-2 left-5 text-5xl font-serif text-accent/60"
-        aria-hidden="true"
-      >
-        &ldquo;
-      </span>
-      <p className="mt-5 text-sm leading-relaxed text-gray-700">{t.quote}</p>
-      <footer className="mt-5 border-t border-primary/10 pt-4">
-        <p className="text-sm font-bold text-primary">
-          {t.name}, {t.business}
-        </p>
-        <p className="text-xs text-gray-500">{t.city}</p>
-        <p className="mt-1 text-accent" aria-label="Avaliação 5 de 5 estrelas">
-          ⭐⭐⭐⭐⭐
-        </p>
-      </footer>
-    </blockquote>
-  );
-}
-
-const AUTOPLAY_INTERVAL_MS = 4000;
-
-function TestimonialsCarousel() {
-  const [itemsPerView, setItemsPerView] = useState(1);
-  const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => {
-    function updateItemsPerView() {
-      setItemsPerView(window.innerWidth >= 640 ? 3 : 1);
-    }
-    updateItemsPerView();
-    window.addEventListener("resize", updateItemsPerView);
-    return () => window.removeEventListener("resize", updateItemsPerView);
-  }, []);
-
-  const totalSlides = Math.ceil(TESTIMONIALS.length / itemsPerView);
-
-  useEffect(() => {
-    setIndex((i) => (i >= totalSlides ? 0 : i));
-  }, [totalSlides]);
-
-  useEffect(() => {
-    if (paused || totalSlides <= 1) return;
-    const id = setInterval(() => {
-      setIndex((i) => (i + 1) % totalSlides);
-    }, AUTOPLAY_INTERVAL_MS);
-    return () => clearInterval(id);
-  }, [paused, totalSlides]);
-
-  function goTo(target: number) {
-    setIndex(((target % totalSlides) + totalSlides) % totalSlides);
-  }
-
-  return (
-    <div
-      className="relative mt-12"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div className="overflow-hidden">
-        <div
-          className="flex transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(-${index * 100}%)` }}
-        >
-          {Array.from({ length: totalSlides }).map((_, slideIndex) => (
-            <div key={slideIndex} className="grid w-full shrink-0 gap-6 px-1 sm:grid-cols-3">
-              {TESTIMONIALS.slice(
-                slideIndex * itemsPerView,
-                slideIndex * itemsPerView + itemsPerView
-              ).map((t) => (
-                <TestimonialCard key={t.name} t={t} />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <button
-        type="button"
-        onClick={() => goTo(index - 1)}
-        aria-label="Depoimento anterior"
-        className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-md transition hover:bg-primary hover:text-white"
-      >
-        ←
-      </button>
-      <button
-        type="button"
-        onClick={() => goTo(index + 1)}
-        aria-label="Próximo depoimento"
-        className="absolute right-0 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white text-lg font-bold text-primary shadow-md transition hover:bg-primary hover:text-white"
-      >
-        →
-      </button>
-
-      <div className="mt-8 flex justify-center gap-2" role="tablist" aria-label="Selecionar grupo de depoimentos">
-        {Array.from({ length: totalSlides }).map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            role="tab"
-            aria-selected={i === index}
-            aria-label={`Ir para o grupo de depoimentos ${i + 1}`}
-            onClick={() => goTo(i)}
-            className={`h-2.5 w-2.5 rounded-full transition ${
-              i === index ? "bg-accent" : "bg-primary/20 hover:bg-primary/40"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function TestimonialsSection() {
-  return (
-    <section id="depoimentos" className="bg-primary-light py-20 sm:py-28">
-      <div className="mx-auto max-w-6xl px-6">
-        <Reveal>
-          <h2 className="text-center text-3xl font-extrabold text-primary sm:text-4xl">
-            Quem já usa, não quer mais voltar
-          </h2>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <TestimonialsCarousel />
-        </Reveal>
       </div>
     </section>
   );
@@ -1039,7 +841,6 @@ export default function Home() {
         <ProblemSection />
         <SolutionSection />
         <FeaturesSection />
-        <TestimonialsSection />
         <PricingSection />
         <FaqSection />
         <FinalCtaSection />
